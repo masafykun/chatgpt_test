@@ -1,9 +1,9 @@
-"""Example automated trading script
+"""自動売買のサンプルスクリプト
 
-This script fetches news from Twitter, Yahoo News, and Google News
-and demonstrates how one might tie that information into a trading
-strategy. It is provided for educational purposes only and does not
-constitute financial advice. Use at your own risk.
+このスクリプトは Twitter、Yahoo ニュース、Google ニュースから
+情報を取得し、それを利用した取引戦略を行う例を示します。
+学習目的のサンプルであり、投資助言を行うものではありません。
+利用は自己責任でお願いします。
 """
 
 import logging
@@ -13,70 +13,64 @@ from typing import List
 
 import requests
 
-# Replace with your own API keys and authentication logic
+# ここに自身のAPIキーや認証処理を記述してください
 TWITTER_BEARER_TOKEN = "YOUR_TWITTER_BEARER_TOKEN"
 
-# Example placeholders for your brokerage API
+# ブローカーAPI用のプレースホルダー
 BROKER_API_KEY = "YOUR_BROKER_API_KEY"
 
 
 def fetch_twitter_news() -> List[str]:
-    """Fetches recent tweets matching some criteria.
+    """特定条件に合致するツイートを取得します。
 
-    This function is a placeholder. You would normally use the
-    Twitter API (for example via tweepy) and apply your own filters.
+    この関数はプレースホルダーです。通常は Twitter API
+    （たとえば tweepy）を使用し、独自のフィルターを適用します。
     """
-    logging.debug("Fetching Twitter data")
-    # TODO: Implement Twitter API requests
+    logging.debug("Twitter データを取得中")
+    # TODO: Twitter API の呼び出しを実装する
     return []
 
 
 def fetch_rss(url: str) -> str:
-    """Utility function to download an RSS feed."""
+    """RSSフィードを取得するためのユーティリティ関数"""
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
         return response.text
     except Exception as exc:
-        logging.warning("Failed to fetch %s: %s", url, exc)
+        logging.warning("%s の取得に失敗しました: %s", url, exc)
     return ""
 
 
 def fetch_yahoo_news() -> str:
+    """YahooニュースのRSSを取得"""
     return fetch_rss("https://news.yahoo.com/rss/")
 
 
 def fetch_google_news() -> str:
+    """GoogleニュースのRSSを取得"""
     return fetch_rss("https://news.google.com/rss")
 
 
 def decide_trades(news_items: List[str]) -> List[str]:
-    """Determines what trades to make based on news data.
-
-    This is a stub for your trading strategy. Replace with your
-    sentiment analysis or other decision-making logic.
-    """
-    logging.debug("Deciding trades based on %d news items", len(news_items))
-    # Example: always return an empty list (no trades)
+    """ニュースデータをもとに売買判断を行う"""
+    logging.debug("%d 件のニュースから取引を判断", len(news_items))
+    # ここに感情分析などの売買ロジックを実装する
     return []
 
 
 def execute_trades(trades: List[str]) -> None:
-    """Submit trade orders via your brokerage API.
-
-    This is a placeholder demonstrating where you would send orders
-    to a brokerage (for example using the Alpaca API).
-    """
+    """ブローカーAPIに注文を送信する"""
     for trade in trades:
-        logging.info("Executing trade: %s", trade)
-        # TODO: Send trade to brokerage
+        logging.info("取引実行: %s", trade)
+        # TODO: ブローカーへの注文送信を実装する
 
 
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    logging.info("Starting automated trading loop")
+    logging.info("自動売買ループを開始")
     while True:
-        logging.info("Fetching news")
+        logging.info("ニュースを取得中")
         news = []
         news.extend(fetch_twitter_news())
         news.append(fetch_yahoo_news())
@@ -86,7 +80,7 @@ def main() -> None:
         if trades:
             execute_trades(trades)
         else:
-            logging.info("No trades to execute this cycle")
+            logging.info("今回実行する取引はありません")
 
         time.sleep(60)
 
