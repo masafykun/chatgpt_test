@@ -22,14 +22,24 @@
    pip install -r requirements.txt
    ```
    最低限 `requests` が必要です。Twitter API 等を使用する場合は `tweepy` などもインストールしてください。
-3. `auto_trade.py` 内の API キーを設定
-   `TWITTER_BEARER_TOKEN` や `BROKER_API_KEY` などの値を自身のものに置き換えます。
+3. `auto_trade.py` 内の設定を編集
+   `BROKER_API_KEY` や `TWITTER_SEARCH_KEYWORD` を必要に応じて変更します。
 4. スクリプトを実行
    ```bash
    python3 auto_trade.py
    ```
 
 スクリプトは 1 分ごとにニュースを取得して売買判断を行います。取引ロジックはプレースホルダーなので必要に応じて実装を追加してください。
+
+## サンプル出力
+
+以下はスクリプト実行時のログ例です。
+
+```text
+2025-06-04 12:00:00 INFO 自動売買ループを開始
+2025-06-04 12:00:00 INFO ニュースを取得中
+2025-06-04 12:00:01 INFO 今回実行する取引はありません
+```
 
 ## 免責事項
 

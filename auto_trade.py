@@ -8,27 +8,35 @@
 
 import logging
 import time
-from datetime import datetime
 from typing import List
 
 import requests
+import xml.etree.ElementTree as ET
+from urllib.parse import quote
 
-# ここに自身のAPIキーや認証処理を記述してください
-TWITTER_BEARER_TOKEN = "YOUR_TWITTER_BEARER_TOKEN"
+# Twitter は非公式 API (Nitter) を利用するため、認証は不要です
+# 取得に使う検索キーワードを変更したい場合は書き換えてください
+TWITTER_SEARCH_KEYWORD = "株"
 
 # ブローカーAPI用のプレースホルダー
 BROKER_API_KEY = "YOUR_BROKER_API_KEY"
 
 
 def fetch_twitter_news() -> List[str]:
-    """特定条件に合致するツイートを取得します。
+    """Nitter の RSS フィードを使ってツイートを取得する"""
 
-    この関数はプレースホルダーです。通常は Twitter API
-    （たとえば tweepy）を使用し、独自のフィルターを適用します。
-    """
-    logging.debug("Twitter データを取得中")
-    # TODO: Twitter API の呼び出しを実装する
-    return []
+    logging.debug("Twitter データを非公式APIから取得中")
+    url = f"https://nitter.net/search.rss?q={quote(TWITTER_SEARCH_KEYWORD)}"
+    rss = fetch_rss(url)
+    if not rss:
+        return []
+    try:
+        root = ET.fromstring(rss)
+        items = [item.findtext("title") or "" for item in root.findall("./channel/item")]
+        return [i for i in items if i]
+    except ET.ParseError as exc:
+        logging.warning("Twitter RSS の解析に失敗: %s", exc)
+        return []
 
 
 def fetch_rss(url: str) -> str:
